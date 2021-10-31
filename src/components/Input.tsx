@@ -68,13 +68,16 @@ const useStyles = makeStyles((theme: Theme) =>
 export const Input = () => {
   const classes = useStyles();
 
-  const [search, setSearch, , setPage] = useContext(SearchContextProvider);
+  const [search, setSearch, , setPage, , , , , setMovies] = useContext(
+    SearchContextProvider
+  );
 
   const handleChange = async (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
     setSearch(e.target.value);
     setPage(1);
+    setMovies(null);
   };
 
   return (

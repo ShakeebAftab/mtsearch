@@ -1,7 +1,8 @@
-import { Box, CircularProgress, Container, Grid } from "@material-ui/core";
+import { Box, Grid } from "@material-ui/core";
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { SearchContextProvider } from "../context/SearchContext";
+import { filter } from "../helpers/filter";
 import { Movie } from "./Movie";
 import { MovieDetail } from "./MovieDetail";
 import { MovieType } from "./types";
@@ -9,9 +10,31 @@ import { MovieType } from "./types";
 export const Results = () => {
   const [search] = useContext(SearchContextProvider);
   const [fetch, setFetch] = useState(false);
-  const [movies, setMovies] = useState<MovieType[] | null>();
-  const [, , , , , setOpenDetails, openMovieDetails, setOpenMovieDetails] =
-    useContext(SearchContextProvider);
+  const [
+    ,
+    ,
+    page,
+    setPage,
+    ,
+    setOpenDetails,
+    openMovieDetails,
+    setOpenMovieDetails,
+    movies,
+    setMovies,
+  ] = useContext(SearchContextProvider);
+
+  const observer = useRef<any>(null);
+  const lastPoster = useCallback(
+    (node) => {
+      if (fetch) return;
+      if (observer.current?.isConnected) observer.current.disconnect();
+      observer.current = new IntersectionObserver((enteries) => {
+        if (enteries[0].isIntersecting) setPage((page: number) => page + 1);
+      });
+      if (node) observer.current.observe(node);
+    },
+    [fetch, setPage]
+  );
 
   const handlePosterClick = (movie: MovieType) => {
     setOpenMovieDetails(movie);
@@ -23,12 +46,14 @@ export const Results = () => {
       try {
         const data = await axios.get(
           search === ""
-            ? `https://api.themoviedb.org/3/trending/all/week?api_key=${process.env.REACT_APP_TMDB_API}&language=en-US`
-            : `https://api.themoviedb.org/3/search/movie?api_key=${
-                process.env.REACT_APP_TMDB_API
-              }&language=en-US&query=${search}&page=${1}&include_adult=false`
+            ? `https://api.themoviedb.org/3/trending/all/week?api_key=${process.env.REACT_APP_TMDB_API}&language=en-US&page=${page}`
+            : `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB_API}&language=en-US&query=${search}&page=${page}&include_adult=false`
         );
-        setMovies(data.data.results);
+        setMovies((movies: MovieType[]) =>
+          movies !== null
+            ? filter(movies, data.data.results)
+            : data.data.results
+        );
       } catch (error: any) {
         console.log(error?.message);
       }
@@ -37,14 +62,7 @@ export const Results = () => {
 
     setFetch(true);
     fetchData();
-  }, [search]);
-
-  if (fetch)
-    return (
-      <Container maxWidth="xs">
-        <CircularProgress color="primary" />
-      </Container>
-    );
+  }, [search, page, setMovies]);
 
   return (
     <Box
@@ -62,6 +80,7 @@ export const Results = () => {
                 item
                 key={`${movie.id}:${idx}`}
                 onClick={() => handlePosterClick(movie)}
+                ref={lastPoster}
               >
                 <Movie id={movie.id} posterPath={movie.poster_path} />
               </Grid>

@@ -60,12 +60,11 @@ export const Suggestion = ({ id, currMovieID }: Props) => {
         {movies?.map(
           (movie: MovieType, idx: number) =>
             currMovieID !== movie.id && (
-              <div onClick={() => setOpenMovieDetails(movie)}>
-                <Movie
-                  id={movie.id}
-                  posterPath={movie.poster_path}
-                  key={`${movie.id}:${idx}`}
-                />
+              <div
+                onClick={() => setOpenMovieDetails(movie)}
+                key={`${movie.id}:${idx}`}
+              >
+                <Movie id={movie.id} posterPath={movie.poster_path} />
               </div>
             )
         )}
