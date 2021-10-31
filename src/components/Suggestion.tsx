@@ -14,6 +14,7 @@ const useStyles = makeStyles(() => ({
   posters: {
     display: "flex",
     padding: "20px",
+    paddingTop: "5px",
     overflowY: "hidden",
     overflowX: "scroll",
     "&::-webkit-scrollbar": {

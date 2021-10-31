@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
   releaseDateTxt: {
     color: "gray",
+    marginLeft: "3px",
   },
 }));
 
@@ -81,7 +82,7 @@ export const MovieDetail = ({ movie }: Props) => {
             />
           </Grid>
           <Grid item xs={12} className={classes.gridItemTitle}>
-            <Typography variant="h6">
+            <Typography variant="h4">
               {movie.title ||
                 movie.original_name ||
                 movie.original_title ||

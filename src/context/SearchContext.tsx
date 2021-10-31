@@ -11,6 +11,7 @@ export const SearchContext = ({ children }: any) => {
   );
   const [openDetails, setOpenDetails] = useState(false);
   const [movies, setMovies] = useState<MovieType[] | null>(null);
+  const [genre, setGenre] = useState("ALL");
   return (
     <SearchContextProvider.Provider
       value={[
@@ -24,6 +25,8 @@ export const SearchContext = ({ children }: any) => {
         setOpenMovieDetails,
         movies,
         setMovies,
+        genre,
+        setGenre,
       ]}
     >
       {children}

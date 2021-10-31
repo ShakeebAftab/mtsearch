@@ -3,15 +3,15 @@ import axios from "axios";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { SearchContextProvider } from "../context/SearchContext";
 import { filter } from "../helpers/filter";
+import { genreNumbers } from "../helpers/GenreDecode";
 import { Movie } from "./Movie";
 import { MovieDetail } from "./MovieDetail";
 import { MovieType } from "./types";
 
 export const Results = () => {
-  const [search] = useContext(SearchContextProvider);
   const [fetch, setFetch] = useState(false);
   const [
-    ,
+    search,
     ,
     page,
     setPage,
@@ -21,6 +21,7 @@ export const Results = () => {
     setOpenMovieDetails,
     movies,
     setMovies,
+    genre,
   ] = useContext(SearchContextProvider);
 
   const observer = useRef<any>(null);
@@ -72,28 +73,35 @@ export const Results = () => {
       alignItems="center"
     >
       <Grid container style={{ display: "flex", justifyContent: "center" }}>
-        {movies?.map(
-          (movie: MovieType, idx: number) =>
-            movie.poster_path &&
-            (movies.length - 1 === idx ? (
-              <Grid
-                item
-                key={`${movie.id}:${idx}`}
-                onClick={() => handlePosterClick(movie)}
-                ref={lastPoster}
-              >
-                <Movie id={movie.id} posterPath={movie.poster_path} />
-              </Grid>
-            ) : (
-              <Grid
-                item
-                key={`${movie.id}:${idx}`}
-                onClick={() => handlePosterClick(movie)}
-              >
-                <Movie id={movie.id} posterPath={movie.poster_path} />
-              </Grid>
-            ))
-        )}
+        {movies?.map((movie: MovieType, idx: number) => {
+          if (
+            genreNumbers[`${genre}`] === 1 ||
+            movie.genre_ids.includes(genreNumbers[`${genre}`])
+          ) {
+            return (
+              movie.poster_path &&
+              (movies.length - 1 === idx ? (
+                <Grid
+                  item
+                  key={`${movie.id}:${idx}`}
+                  onClick={() => handlePosterClick(movie)}
+                  ref={lastPoster}
+                >
+                  <Movie id={movie.id} posterPath={movie.poster_path} />
+                </Grid>
+              ) : (
+                <Grid
+                  item
+                  key={`${movie.id}:${idx}`}
+                  onClick={() => handlePosterClick(movie)}
+                >
+                  <Movie id={movie.id} posterPath={movie.poster_path} />
+                </Grid>
+              ))
+            );
+          }
+          return [];
+        })}
       </Grid>
       {openMovieDetails && <MovieDetail movie={openMovieDetails} />}
     </Box>

@@ -6,9 +6,10 @@ import {
 } from "@material-ui/core/styles";
 import InputBase from "@material-ui/core/InputBase";
 import { Button, Grid, Paper } from "@material-ui/core";
-import { CreateRounded } from "@material-ui/icons";
+import { CreateRounded, DirectionsRun } from "@material-ui/icons";
 import { useContext } from "react";
 import { SearchContextProvider } from "../context/SearchContext";
+import { Genre } from "./Genre";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,7 +48,6 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: "center",
       paddingTop: "20px",
       paddingBottom: "20px",
-      // paddingRight: "5px",
     },
     inputDiv: {
       width: "95%",
@@ -62,15 +62,18 @@ const useStyles = makeStyles((theme: Theme) =>
     button: {
       display: "none",
     },
+    gridItemGenre: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
   })
 );
 
 export const Input = () => {
   const classes = useStyles();
-
-  const [search, setSearch, , setPage, , , , , setMovies] = useContext(
-    SearchContextProvider
-  );
+  const [search, setSearch, , setPage, , , , , , setMovies, genre, setGenre] =
+    useContext(SearchContextProvider);
 
   const handleChange = async (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -83,7 +86,7 @@ export const Input = () => {
   return (
     <form>
       <Paper className={classes.paper} elevation={0}>
-        <Grid container alignItems="center">
+        <Grid container alignItems="center" spacing={2}>
           <Grid item xs={12} className={classes.gridItem}>
             <div className={classes.inputDiv}>
               <div className={classes.search}>
@@ -113,6 +116,54 @@ export const Input = () => {
           >
             search
           </Button>
+          <Grid
+            item
+            xs={12}
+            container
+            spacing={0}
+            className={classes.gridItemGenre}
+          >
+            <Grid item md={2} onClick={() => setGenre("ALL")}>
+              <Genre
+                name="All"
+                height={20}
+                Icon={DirectionsRun}
+                selected={genre === "ALL"}
+              />
+            </Grid>
+            <Grid item md={2} onClick={() => setGenre("ACTION")}>
+              <Genre
+                name="Action"
+                height={20}
+                Icon={DirectionsRun}
+                selected={genre === "ACTION"}
+              />
+            </Grid>
+            <Grid item md={2} onClick={() => setGenre("COMEDY")}>
+              <Genre
+                name="Comedy"
+                height={20}
+                Icon={DirectionsRun}
+                selected={genre === "COMEDY"}
+              />
+            </Grid>
+            <Grid item md={2} onClick={() => setGenre("ROMANCE")}>
+              <Genre
+                name="Romance"
+                height={20}
+                Icon={DirectionsRun}
+                selected={genre === "ROMANCE"}
+              />
+            </Grid>
+            <Grid item md={2} onClick={() => setGenre("HORROR")}>
+              <Genre
+                name="Horror"
+                height={20}
+                Icon={DirectionsRun}
+                selected={genre === "HORROR"}
+              />
+            </Grid>
+          </Grid>
         </Grid>
       </Paper>
     </form>
