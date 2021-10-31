@@ -1,6 +1,7 @@
 import { Box, Grid } from "@material-ui/core";
 import { Header } from "./components/Header";
 import { Input } from "./components/Input";
+import { Results } from "./components/Results";
 
 export const App = () => {
   return (
@@ -11,6 +12,9 @@ export const App = () => {
         </Grid>
         <Grid item xs={12}>
           <Input />
+        </Grid>
+        <Grid item xs={12}>
+          <Results />
         </Grid>
       </Grid>
     </Box>

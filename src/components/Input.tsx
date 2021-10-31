@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: "gray",
     },
     button: {
-      borderRadius: 25,
+      display: "none",
     },
   })
 );
@@ -68,19 +68,20 @@ const useStyles = makeStyles((theme: Theme) =>
 export const Input = () => {
   const classes = useStyles();
 
-  const [search, setSearch] = useContext(SearchContextProvider);
+  const [search, setSearch, , setPage] = useContext(SearchContextProvider);
 
   const handleChange = async (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
     setSearch(e.target.value);
+    setPage(1);
   };
 
   return (
     <form>
       <Paper className={classes.paper} elevation={0}>
         <Grid container alignItems="center">
-          <Grid item xs={9} sm={11} className={classes.gridItem}>
+          <Grid item xs={12} className={classes.gridItem}>
             <div className={classes.inputDiv}>
               <div className={classes.search}>
                 <div className={classes.searchIcon}>
@@ -99,18 +100,16 @@ export const Input = () => {
               </div>
             </div>
           </Grid>
-          <Grid item xs={3} sm={1}>
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              disableElevation
-              type="submit"
-              onClick={(e) => e.preventDefault()}
-            >
-              search
-            </Button>
-          </Grid>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            disableElevation
+            type="submit"
+            onClick={(e) => e.preventDefault()}
+          >
+            search
+          </Button>
         </Grid>
       </Paper>
     </form>
