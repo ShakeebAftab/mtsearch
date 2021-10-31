@@ -27,19 +27,28 @@ export const Results = () => {
   const observer = useRef<any>(null);
   const lastPoster = useCallback(
     (node) => {
-      if (fetch) return;
+      if (fetch || page >= 20) return;
       if (observer.current?.isConnected) observer.current.disconnect();
       observer.current = new IntersectionObserver((enteries) => {
         if (enteries[0].isIntersecting) setPage((page: number) => page + 1);
       });
       if (node) observer.current.observe(node);
     },
-    [fetch, setPage]
+    [fetch, setPage, page]
   );
 
   const handlePosterClick = (movie: MovieType) => {
     setOpenMovieDetails(movie);
     setOpenDetails(true);
+  };
+
+  const getLastID = (movies: MovieType[], genre: string) => {
+    if (!movies) return;
+    let lastId = movies[0].id;
+    movies.forEach((movie: MovieType) => {
+      if (movie.genre_ids.includes(genreNumbers[`${genre}`])) lastId = movie.id;
+    });
+    return lastId;
   };
 
   useEffect(() => {
@@ -78,9 +87,10 @@ export const Results = () => {
             genreNumbers[`${genre}`] === 1 ||
             movie.genre_ids.includes(genreNumbers[`${genre}`])
           ) {
+            const lastId = getLastID(movies, genre);
             return (
               movie.poster_path &&
-              (movies.length - 1 === idx ? (
+              (movies.length - 1 === idx || movie.id === lastId ? (
                 <Grid
                   item
                   key={`${movie.id}:${idx}`}

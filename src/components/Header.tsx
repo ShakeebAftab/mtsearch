@@ -28,7 +28,7 @@ export const Header = () => {
       <AppBar position="static" className={classes.appbar} elevation={0}>
         <Toolbar variant="dense">
           <Typography variant="h6" color="inherit" className={classes.title}>
-            M&G Search
+            M&T Search
           </Typography>
         </Toolbar>
       </AppBar>

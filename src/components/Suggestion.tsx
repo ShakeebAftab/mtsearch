@@ -57,19 +57,32 @@ export const Suggestion = ({ id, currMovieID }: Props) => {
       >
         Similar Movies
       </Typography>
-      <Box className={classes.posters}>
-        {movies?.map(
-          (movie: MovieType, idx: number) =>
-            currMovieID !== movie.id && (
-              <div
-                onClick={() => setOpenMovieDetails(movie)}
-                key={`${movie.id}:${idx}`}
-              >
-                <Movie id={movie.id} posterPath={movie.poster_path} />
-              </div>
-            )
-        )}
-      </Box>
+      {movies && movies.length > 0 ? (
+        <Box className={classes.posters}>
+          {movies?.map(
+            (movie: MovieType, idx: number) =>
+              currMovieID !== movie.id && (
+                <div
+                  onClick={() => setOpenMovieDetails(movie)}
+                  key={`${movie.id}:${idx}`}
+                >
+                  <Movie id={movie.id} posterPath={movie.poster_path} />
+                </div>
+              )
+          )}
+        </Box>
+      ) : (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          mb="20px"
+        >
+          <Typography variant="h6">
+            Sorry, no similar movies were found!
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 };
