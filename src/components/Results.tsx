@@ -3,13 +3,20 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { SearchContextProvider } from "../context/SearchContext";
 import { Movie } from "./Movie";
+import { MovieDetail } from "./MovieDetail";
 import { MovieType } from "./types";
 
 export const Results = () => {
   const [search] = useContext(SearchContextProvider);
   const [fetch, setFetch] = useState(false);
   const [movies, setMovies] = useState<MovieType[] | null>();
-  const [openMovie, setOpenMovie] = useState<MovieType | null>(null);
+  const [, , , , , setOpenDetails, openMovieDetails, setOpenMovieDetails] =
+    useContext(SearchContextProvider);
+
+  const handlePosterClick = (movie: MovieType) => {
+    setOpenMovieDetails(movie);
+    setOpenDetails(true);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,7 +61,7 @@ export const Results = () => {
               <Grid
                 item
                 key={`${movie.id}:${idx}`}
-                onClick={() => setOpenMovie(movie)}
+                onClick={() => handlePosterClick(movie)}
               >
                 <Movie id={movie.id} posterPath={movie.poster_path} />
               </Grid>
@@ -62,13 +69,14 @@ export const Results = () => {
               <Grid
                 item
                 key={`${movie.id}:${idx}`}
-                onClick={() => setOpenMovie(movie)}
+                onClick={() => handlePosterClick(movie)}
               >
                 <Movie id={movie.id} posterPath={movie.poster_path} />
               </Grid>
             ))
         )}
       </Grid>
+      {openMovieDetails && <MovieDetail movie={openMovieDetails} />}
     </Box>
   );
 };
