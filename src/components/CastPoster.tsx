@@ -24,9 +24,9 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-  img?: string;
-  name?: string;
-  role?: string;
+  img: string;
+  name: string;
+  role: string;
 }
 
 export const CastPoster = ({ img, name, role }: Props) => {

@@ -13,4 +13,4 @@ Search engine for movies and tv-shows.
 
 ## Demo
 
-Link to be added
+[![Watch the demo](https://i.imgur.com/2VpGqQw.png)](https://youtu.be/VixEYSJW4U8)

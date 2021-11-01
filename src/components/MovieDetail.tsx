@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     position: "absolute",
     width: "80vw",
-    maxHeight: "70vh",
+    maxHeight: "80vh",
     overflow: "auto",
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
@@ -237,6 +237,7 @@ export const MovieDetail = ({ movie }: Props) => {
     <Modal
       open={openDetails}
       onClose={() => {
+        console.log("firing cleanup");
         setOpenDetails(false);
         setImdbId(null);
         setCast([]);
