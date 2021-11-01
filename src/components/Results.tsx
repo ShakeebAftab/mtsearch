@@ -67,7 +67,7 @@ export const Results = () => {
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
           }
         );
-        setHasMore(data.data.results > 0);
+        setHasMore(data.data.results.length > 0);
         setMovies((movies: MovieType[]) =>
           movies !== null
             ? filter(movies, data.data.results)

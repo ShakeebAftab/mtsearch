@@ -26,9 +26,10 @@ const useStyles = makeStyles(() => ({
 interface Props {
   id: number;
   currMovieID: number;
+  reset: Function;
 }
 
-export const Suggestion = ({ id, currMovieID }: Props) => {
+export const Suggestion = ({ id, currMovieID, reset }: Props) => {
   const classes = useStyles();
   const [movies, setMovies] = useState<MovieType[] | null>(null);
   const [, , , , , , , setOpenMovieDetails] = useContext(SearchContextProvider);
@@ -63,7 +64,10 @@ export const Suggestion = ({ id, currMovieID }: Props) => {
             (movie: MovieType, idx: number) =>
               currMovieID !== movie.id && (
                 <div
-                  onClick={() => setOpenMovieDetails(movie)}
+                  onClick={() => {
+                    setOpenMovieDetails(movie);
+                    reset();
+                  }}
                   key={`${movie.id}:${idx}`}
                 >
                   <Movie id={movie.id} posterPath={movie.poster_path} />

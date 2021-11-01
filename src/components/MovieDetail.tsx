@@ -1,7 +1,16 @@
-import { Grid, makeStyles, Modal, Typography } from "@material-ui/core";
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Grid,
+  makeStyles,
+  Modal,
+  Typography,
+} from "@material-ui/core";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { SearchContextProvider } from "../context/SearchContext";
+import { CastPoster } from "./CastPoster";
 import { Ranking } from "./Ranking";
 import { Suggestion } from "./Suggestion";
 import { MovieType } from "./types";
@@ -45,6 +54,11 @@ const useStyles = makeStyles((theme) => ({
     color: "gray",
     marginLeft: "3px",
   },
+  center: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 }));
 
 const getModalStyle = () => {
@@ -62,10 +76,17 @@ interface Props {
 export const MovieDetail = ({ movie }: Props) => {
   const classes = useStyles();
   const [imdbId, setImdbId] = useState<string | null>("");
+  const [watchApiId, setWatchApiId] = useState<string | null>("");
   const [modalStyle] = useState(getModalStyle);
   const [, , , , openDetails, setOpenDetails] = useContext(
     SearchContextProvider
   );
+  const [cast, setCast] = useState<any[]>([]);
+
+  const onClickReset = () => {
+    setImdbId(null);
+    setCast([]);
+  };
 
   useEffect(() => {
     const getImdbId = async () => {
@@ -100,29 +121,107 @@ export const MovieDetail = ({ movie }: Props) => {
 
           const getChars = async () => {
             const chars: any[] = [];
-            names.forEach(async (name: string) => {
-              if (process.env.REACT_APP_IMDB_API) {
-                try {
-                  const data = await axios.get(
-                    `https://imdb8.p.rapidapi.com/title/get-charname-list`,
-                    {
-                      params: {
-                        id: name,
-                        tconst: imdbId,
-                      },
-                      headers: {
-                        "x-rapidapi-host": "imdb8.p.rapidapi.com",
-                        "x-rapidapi-key": process.env.REACT_APP_IMDB_API,
-                      },
-                    }
-                  );
-                  chars.push(data.data);
-                } catch (error) {
-                  console.log(error);
-                }
-                console.log(chars);
+            if (process.env.REACT_APP_IMDB_API) {
+              try {
+                const data = await axios.get(
+                  `https://imdb8.p.rapidapi.com/title/get-charname-list`,
+                  {
+                    params: {
+                      id: names[0],
+                      tconst: imdbId,
+                    },
+                    headers: {
+                      "x-rapidapi-host": "imdb8.p.rapidapi.com",
+                      "x-rapidapi-key": process.env.REACT_APP_IMDB_API,
+                    },
+                  }
+                );
+                chars.push(data.data);
+              } catch (error) {
+                console.log(error);
               }
-            });
+            }
+            if (process.env.REACT_APP_IMDB_API) {
+              try {
+                const data = await axios.get(
+                  `https://imdb8.p.rapidapi.com/title/get-charname-list`,
+                  {
+                    params: {
+                      id: names[1],
+                      tconst: imdbId,
+                    },
+                    headers: {
+                      "x-rapidapi-host": "imdb8.p.rapidapi.com",
+                      "x-rapidapi-key": process.env.REACT_APP_IMDB_API,
+                    },
+                  }
+                );
+                chars.push(data.data);
+              } catch (error) {
+                console.log(error);
+              }
+            }
+            if (process.env.REACT_APP_IMDB_API) {
+              try {
+                const data = await axios.get(
+                  `https://imdb8.p.rapidapi.com/title/get-charname-list`,
+                  {
+                    params: {
+                      id: names[2],
+                      tconst: imdbId,
+                    },
+                    headers: {
+                      "x-rapidapi-host": "imdb8.p.rapidapi.com",
+                      "x-rapidapi-key": process.env.REACT_APP_IMDB_API,
+                    },
+                  }
+                );
+                chars.push(data.data);
+              } catch (error) {
+                console.log(error);
+              }
+            }
+            if (process.env.REACT_APP_IMDB_API) {
+              try {
+                const data = await axios.get(
+                  `https://imdb8.p.rapidapi.com/title/get-charname-list`,
+                  {
+                    params: {
+                      id: names[3],
+                      tconst: imdbId,
+                    },
+                    headers: {
+                      "x-rapidapi-host": "imdb8.p.rapidapi.com",
+                      "x-rapidapi-key": process.env.REACT_APP_IMDB_API,
+                    },
+                  }
+                );
+                chars.push(data.data);
+              } catch (error) {
+                console.log(error);
+              }
+            }
+            if (process.env.REACT_APP_IMDB_API) {
+              try {
+                const data = await axios.get(
+                  `https://imdb8.p.rapidapi.com/title/get-charname-list`,
+                  {
+                    params: {
+                      id: names[4],
+                      tconst: imdbId,
+                    },
+                    headers: {
+                      "x-rapidapi-host": "imdb8.p.rapidapi.com",
+                      "x-rapidapi-key": process.env.REACT_APP_IMDB_API,
+                    },
+                  }
+                );
+                chars.push(data.data);
+              } catch (error) {
+                console.log(error);
+              }
+            }
+            setCast(chars);
           };
           getChars();
         } catch (error: any) {
@@ -131,12 +230,28 @@ export const MovieDetail = ({ movie }: Props) => {
       }
     };
     getImdbData();
+
+    const getWatchAPI = async () => {
+      try {
+        const data = await axios.get(
+          `https://api.watchmode.com/v1/search/?apiKey=${process.env.REACT_APP_WATCH_API}&search_field=imdb_id&search_value=${imdbId}`
+        );
+        console.log(data.data.title_results[0].id);
+      } catch (error: any) {
+        console.log(error.message);
+      }
+    };
+    getWatchAPI();
   }, [movie, imdbId]);
 
   return (
     <Modal
       open={openDetails}
-      onClose={() => setOpenDetails(false)}
+      onClose={() => {
+        setOpenDetails(false);
+        setImdbId(null);
+        setCast([]);
+      }}
       aria-labelledby="simple-modal-title"
       aria-describedby="simple-modal-description"
     >
@@ -197,7 +312,54 @@ export const MovieDetail = ({ movie }: Props) => {
             />
           </Grid>
         </Grid>
-        <Suggestion id={movie.genre_ids[0]} currMovieID={movie.id} />
+        {imdbId && cast.length > 0 ? (
+          <Box
+            overflow="hidden"
+            mt="15px"
+            mb="15px"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Container maxWidth="sm" className={classes.center}>
+              <Grid container spacing={2} className={classes.center}>
+                {cast.map((member: any, idx: number) => (
+                  <Grid
+                    item
+                    sm={6}
+                    md={4}
+                    key={`${idx}`}
+                    className={classes.center}
+                  >
+                    <CastPoster
+                      img={Object.values<any>(member)[0].name.image.url}
+                      name={Object.values<any>(member)[0].name.name}
+                      role={
+                        Object.values<any>(member)[0].charname[0].characters[0]
+                      }
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Container>
+          </Box>
+        ) : (
+          <Box
+            overflow="hidden"
+            mt="15px"
+            mb="15px"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <CircularProgress />
+          </Box>
+        )}
+        <Suggestion
+          id={movie.genre_ids[0]}
+          currMovieID={movie.id}
+          reset={onClickReset}
+        />
       </div>
     </Modal>
   );
