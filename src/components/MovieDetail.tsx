@@ -1,5 +1,6 @@
 import { Grid, makeStyles, Modal, Typography } from "@material-ui/core";
-import { useContext, useState } from "react";
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
 import { SearchContextProvider } from "../context/SearchContext";
 import { Ranking } from "./Ranking";
 import { Suggestion } from "./Suggestion";
@@ -60,10 +61,77 @@ interface Props {
 
 export const MovieDetail = ({ movie }: Props) => {
   const classes = useStyles();
+  const [imdbId, setImdbId] = useState<string | null>("");
   const [modalStyle] = useState(getModalStyle);
   const [, , , , openDetails, setOpenDetails] = useContext(
     SearchContextProvider
   );
+
+  useEffect(() => {
+    const getImdbId = async () => {
+      try {
+        const data = await axios.get(
+          `https://api.themoviedb.org/3/movie/${movie.id}/external_ids?api_key=${process.env.REACT_APP_TMDB_API}`
+        );
+        setImdbId(data.data.imdb_id);
+      } catch (error) {
+        console.log(error);
+        setImdbId(null);
+      }
+    };
+    getImdbId();
+
+    const getImdbData = async () => {
+      if (process.env.REACT_APP_IMDB_API && imdbId) {
+        try {
+          const data = await axios.get(
+            "https://imdb8.p.rapidapi.com/title/get-top-cast",
+            {
+              params: { tconst: imdbId },
+              headers: {
+                "x-rapidapi-host": "imdb8.p.rapidapi.com",
+                "x-rapidapi-key": process.env.REACT_APP_IMDB_API,
+              },
+            }
+          );
+          const names: string[] = [];
+          for (let i = 0; i < 5; i++)
+            names.push(data.data[i].substring(6, data.data[i].length - 1));
+
+          const getChars = async () => {
+            const chars: any[] = [];
+            names.forEach(async (name: string) => {
+              if (process.env.REACT_APP_IMDB_API) {
+                try {
+                  const data = await axios.get(
+                    `https://imdb8.p.rapidapi.com/title/get-charname-list`,
+                    {
+                      params: {
+                        id: name,
+                        tconst: imdbId,
+                      },
+                      headers: {
+                        "x-rapidapi-host": "imdb8.p.rapidapi.com",
+                        "x-rapidapi-key": process.env.REACT_APP_IMDB_API,
+                      },
+                    }
+                  );
+                  chars.push(data.data);
+                } catch (error) {
+                  console.log(error);
+                }
+                console.log(chars);
+              }
+            });
+          };
+          getChars();
+        } catch (error: any) {
+          console.log(error.message);
+        }
+      }
+    };
+    getImdbData();
+  }, [movie, imdbId]);
 
   return (
     <Modal

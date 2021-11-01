@@ -1,5 +1,5 @@
 import { Box, Grid } from "@material-ui/core";
-import axios from "axios";
+import axios, { Canceler } from "axios";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { SearchContextProvider } from "../context/SearchContext";
 import { filter } from "../helpers/filter";
@@ -10,6 +10,7 @@ import { MovieType } from "./types";
 
 export const Results = () => {
   const [fetch, setFetch] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [
     search,
     ,
@@ -27,14 +28,15 @@ export const Results = () => {
   const observer = useRef<any>(null);
   const lastPoster = useCallback(
     (node) => {
-      if (fetch || page >= 20) return;
+      if (fetch) return;
       if (observer.current?.isConnected) observer.current.disconnect();
       observer.current = new IntersectionObserver((enteries) => {
-        if (enteries[0].isIntersecting) setPage((page: number) => page + 1);
+        if (enteries[0].isIntersecting && hasMore)
+          setPage((page: number) => page + 1);
       });
       if (node) observer.current.observe(node);
     },
-    [fetch, setPage, page]
+    [fetch, setPage, hasMore]
   );
 
   const handlePosterClick = (movie: MovieType) => {
@@ -43,7 +45,8 @@ export const Results = () => {
   };
 
   const getLastID = (movies: MovieType[], genre: string) => {
-    if (!movies) return;
+    if (!movies || movies.length < 0) return;
+    if (genre === "ALL") return movies[movies.length - 1].id;
     let lastId = movies[0].id;
     movies.forEach((movie: MovieType) => {
       if (movie.genre_ids.includes(genreNumbers[`${genre}`])) lastId = movie.id;
@@ -52,26 +55,34 @@ export const Results = () => {
   };
 
   useEffect(() => {
+    setFetch(true);
+    let cancel: Canceler;
     const fetchData = async () => {
       try {
         const data = await axios.get(
           search === ""
             ? `https://api.themoviedb.org/3/trending/all/week?api_key=${process.env.REACT_APP_TMDB_API}&language=en-US&page=${page}`
-            : `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB_API}&language=en-US&query=${search}&page=${page}&include_adult=false`
+            : `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB_API}&language=en-US&query=${search}&page=${page}&include_adult=false`,
+          {
+            cancelToken: new axios.CancelToken((c) => (cancel = c)),
+          }
         );
+        setHasMore(data.data.results > 0);
         setMovies((movies: MovieType[]) =>
           movies !== null
             ? filter(movies, data.data.results)
             : data.data.results
         );
+        setFetch(false);
       } catch (error: any) {
+        if (axios.isCancel(error)) return;
         console.log(error?.message);
       }
-      setFetch(false);
     };
-
-    setFetch(true);
     fetchData();
+    return () => {
+      if (cancel) cancel();
+    };
   }, [search, page, setMovies]);
 
   return (
@@ -90,7 +101,7 @@ export const Results = () => {
             const lastId = getLastID(movies, genre);
             return (
               movie.poster_path &&
-              (movies.length - 1 === idx || movie.id === lastId ? (
+              (lastId === movie.id ? (
                 <Grid
                   item
                   key={`${movie.id}:${idx}`}
