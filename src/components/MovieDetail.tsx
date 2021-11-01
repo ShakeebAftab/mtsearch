@@ -237,7 +237,6 @@ export const MovieDetail = ({ movie }: Props) => {
     <Modal
       open={openDetails}
       onClose={() => {
-        console.log("firing cleanup");
         setOpenDetails(false);
         setImdbId(null);
         setCast([]);
