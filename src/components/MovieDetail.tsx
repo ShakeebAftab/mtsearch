@@ -76,7 +76,7 @@ interface Props {
 export const MovieDetail = ({ movie }: Props) => {
   const classes = useStyles();
   const [imdbId, setImdbId] = useState<string | null>("");
-  const [watchApiId, setWatchApiId] = useState<string | null>("");
+  const [error, setError] = useState(false);
   const [modalStyle] = useState(getModalStyle);
   const [, , , , openDetails, setOpenDetails] = useContext(
     SearchContextProvider
@@ -98,6 +98,7 @@ export const MovieDetail = ({ movie }: Props) => {
       } catch (error) {
         console.log(error);
         setImdbId(null);
+        setError(true);
       }
     };
     getImdbId();
@@ -230,18 +231,6 @@ export const MovieDetail = ({ movie }: Props) => {
       }
     };
     getImdbData();
-
-    const getWatchAPI = async () => {
-      try {
-        const data = await axios.get(
-          `https://api.watchmode.com/v1/search/?apiKey=${process.env.REACT_APP_WATCH_API}&search_field=imdb_id&search_value=${imdbId}`
-        );
-        console.log(data.data.title_results[0].id);
-      } catch (error: any) {
-        console.log(error.message);
-      }
-    };
-    getWatchAPI();
   }, [movie, imdbId]);
 
   return (
@@ -251,6 +240,7 @@ export const MovieDetail = ({ movie }: Props) => {
         setOpenDetails(false);
         setImdbId(null);
         setCast([]);
+        setError(false);
       }}
       aria-labelledby="simple-modal-title"
       aria-describedby="simple-modal-description"
@@ -312,7 +302,21 @@ export const MovieDetail = ({ movie }: Props) => {
             />
           </Grid>
         </Grid>
-        {imdbId && cast.length > 0 ? (
+        {error ? (
+          <Box
+            overflow="hidden"
+            textOverflow="wrap"
+            mt="15px"
+            mb="15px"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Typography variant="h6" color="error">
+              Unable to load cast members
+            </Typography>
+          </Box>
+        ) : imdbId && cast.length > 0 ? (
           <Box
             overflow="hidden"
             mt="15px"
@@ -332,10 +336,11 @@ export const MovieDetail = ({ movie }: Props) => {
                     className={classes.center}
                   >
                     <CastPoster
-                      img={Object.values<any>(member)[0].name.image.url}
-                      name={Object.values<any>(member)[0].name.name}
+                      img={Object.values<any>(member)[0]?.name?.image?.url}
+                      name={Object.values<any>(member)[0]?.name?.name}
                       role={
-                        Object.values<any>(member)[0].charname[0].characters[0]
+                        Object.values<any>(member)[0]?.charname[0]
+                          ?.characters[0]
                       }
                     />
                   </Grid>
