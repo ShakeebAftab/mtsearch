@@ -1,9 +1,10 @@
 import { Box, Grid, makeStyles, Typography } from "@material-ui/core";
+import { useContext } from "react";
+import { ThemeContextProvider } from "../theme/theme";
 
 const useStyles = makeStyles({
   box: {
     borderRadius: 25,
-    background: "whitesmoke",
     textAlign: "center",
   },
   img: {
@@ -12,7 +13,6 @@ const useStyles = makeStyles({
     height: "90px",
   },
   charName: {
-    color: "gray",
     fontSize: "10px",
     fontWeight: 600,
   },
@@ -31,6 +31,9 @@ interface Props {
 
 export const CastPoster = ({ img, name, role }: Props) => {
   const classes = useStyles();
+
+  const [isDark] = useContext(ThemeContextProvider);
+
   return (
     <Box
       overflow="hidden"
@@ -38,18 +41,27 @@ export const CastPoster = ({ img, name, role }: Props) => {
       height="150px"
       width="120px"
       className={classes.box}
+      style={{ background: isDark ? "#4d4d4d" : "whitesmoke" }}
     >
       <Grid container spacing={0}>
         <Grid item xs={12}>
           <img src={img} alt="cast pic" className={classes.img} />
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="body1" className={classes.name}>
+          <Typography
+            variant="body1"
+            className={classes.name}
+            color="textPrimary"
+          >
             {name}
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="body2" className={classes.charName}>
+          <Typography
+            variant="body2"
+            className={classes.charName}
+            color="textSecondary"
+          >
             {role}
           </Typography>
         </Grid>

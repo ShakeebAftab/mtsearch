@@ -61,7 +61,7 @@ export const Ranking = ({ name, progress, value }: RankingProps) => {
   const classes = useStyles();
   return (
     <div className={classes.div}>
-      <Typography variant="body1" className={classes.name}>
+      <Typography variant="body1" className={classes.name} color="textPrimary">
         {name}
       </Typography>
       <CircularProgressWithLabel progress={progress} value={value} />

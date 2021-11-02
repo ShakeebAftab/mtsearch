@@ -10,6 +10,7 @@ import {
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { SearchContextProvider } from "../context/SearchContext";
+import { ThemeContextProvider } from "../theme/theme";
 import { CastPoster } from "./CastPoster";
 import { Ranking } from "./Ranking";
 import { Suggestion } from "./Suggestion";
@@ -37,8 +38,10 @@ const useStyles = makeStyles((theme) => ({
   },
   gridItemDesc: {
     padding: "20px",
-    paddingTop: "0px",
+    paddingTop: "0",
     paddingBottom: "10px",
+    marginBottom: "10px",
+    marginTop: "10px",
   },
   gridItemRanking: {
     padding: "20px",
@@ -46,7 +49,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "whitesmoke",
     paddingBottom: "20px",
     marginBottom: "10px",
   },
@@ -82,11 +84,19 @@ export const MovieDetail = ({ movie }: Props) => {
     SearchContextProvider
   );
   const [cast, setCast] = useState<any[]>([]);
+  const [isDark] = useContext(ThemeContextProvider);
 
   const onClickReset = () => {
     setImdbId(null);
     setCast([]);
   };
+
+  useEffect(() => {
+    console.log("firing off cleanup");
+    setImdbId(null);
+    setError(false);
+    setCast([]);
+  }, []);
 
   useEffect(() => {
     const getImdbId = async () => {
@@ -226,6 +236,7 @@ export const MovieDetail = ({ movie }: Props) => {
           };
           getChars();
         } catch (error: any) {
+          setError(true);
           console.log(error.message);
         }
       }
@@ -255,18 +266,24 @@ export const MovieDetail = ({ movie }: Props) => {
             />
           </Grid>
           <Grid item xs={12} className={classes.gridItemTitle}>
-            <Typography variant="h4">
+            <Typography variant="h4" color="textPrimary">
               {movie.title ||
                 movie.original_name ||
                 movie.original_title ||
                 movie.name}
             </Typography>
-            <Typography variant="body2" className={classes.releaseDateTxt}>
+            <Typography
+              variant="body2"
+              className={classes.releaseDateTxt}
+              color="textPrimary"
+            >
               {movie.release_date}
             </Typography>
           </Grid>
           <Grid item xs={12} className={classes.gridItemDesc}>
-            <Typography variant="body1">{movie.overview}</Typography>
+            <Typography variant="body1" color="textPrimary">
+              {movie.overview}
+            </Typography>
           </Grid>
         </Grid>
         <Grid
@@ -275,6 +292,7 @@ export const MovieDetail = ({ movie }: Props) => {
           xs={12}
           spacing={0}
           className={classes.gridItemRanking}
+          style={{ backgroundColor: isDark ? "#4d4d4d" : "whitesmoke" }}
         >
           <Grid item xs={4} md={2}>
             <Ranking

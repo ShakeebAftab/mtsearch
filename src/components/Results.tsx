@@ -91,6 +91,7 @@ export const Results = () => {
       display="flex"
       justifyContent="center"
       alignItems="center"
+      mt="10px"
     >
       <Grid container style={{ display: "flex", justifyContent: "center" }}>
         {movies?.map((movie: MovieType, idx: number) => {

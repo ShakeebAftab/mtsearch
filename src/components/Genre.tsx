@@ -1,5 +1,8 @@
 import { makeStyles, SvgIconTypeMap, Typography } from "@material-ui/core";
 import { OverridableComponent } from "@material-ui/core/OverridableComponent";
+import clsx from "clsx";
+import { useContext } from "react";
+import { ThemeContextProvider } from "../theme/theme";
 
 interface Props {
   Icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
@@ -18,9 +21,6 @@ const useStyles = makeStyles({
     cursor: "pointer",
     color: "gray",
     borderRadius: "10px",
-    "&:hover": {
-      backgroundColor: "whitesmoke",
-    },
     justifyContent: "center",
     marginLeft: "15px",
     marginRight: "15px",
@@ -28,14 +28,29 @@ const useStyles = makeStyles({
   name: {
     fontWeight: 600,
   },
+  dark: {
+    "&:hover": {
+      backgroundColor: "#4d4d4d",
+    },
+  },
+  light: {
+    "&:hover": {
+      backgroundColor: "whitesmoke",
+    },
+  },
 });
 
 export const Genre = ({ Icon, name, height, selected }: Props) => {
   const classes = useStyles();
+
+  const [isDark] = useContext(ThemeContextProvider);
+
   return (
     <div
-      className={classes.itemDiv}
-      style={{ backgroundColor: selected ? "whitesmoke" : "" }}
+      className={clsx(classes.itemDiv, isDark ? classes.dark : classes.light)}
+      style={{
+        backgroundColor: selected ? (isDark ? "#4d4d4d" : "whitesmoke") : "",
+      }}
     >
       <Icon
         style={{
@@ -44,7 +59,7 @@ export const Genre = ({ Icon, name, height, selected }: Props) => {
         }}
         color="primary"
       />
-      <Typography variant="button" className={classes.name}>
+      <Typography variant="button" className={classes.name} color="textPrimary">
         {name}
       </Typography>
     </div>
