@@ -10,7 +10,7 @@ Search engine for movies and tv-shows.
 
 **Client:** React, Context API, Material-UI, Typescript
 
-**APIs:** TMDB, IMDB
+**APIs:** TMDB
 
 **Deployment:** Firebase
 
