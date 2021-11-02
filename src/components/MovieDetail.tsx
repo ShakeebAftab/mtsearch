@@ -10,11 +10,13 @@ import {
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { SearchContextProvider } from "../context/SearchContext";
+import { genres } from "../helpers/genres";
 import { ThemeContextProvider } from "../theme/theme";
 import { CastPoster } from "./CastPoster";
 import { Ranking } from "./Ranking";
 import { Suggestion } from "./Suggestion";
 import { MovieType } from "./types";
+import { WatchRow } from "./WatchRow";
 
 const useStyles = makeStyles((theme) => ({
   img: {
@@ -53,13 +55,27 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "10px",
   },
   releaseDateTxt: {
-    color: "gray",
     marginLeft: "3px",
   },
   center: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  },
+  posters: {
+    display: "flex",
+    padding: "20px",
+    paddingTop: "5px",
+    overflowY: "hidden",
+    overflowX: "scroll",
+    "&::-webkit-scrollbar": {
+      display: "none",
+    },
+  },
+  genre: {
+    paddingTop: "0",
+    marginLeft: "2px",
+    fontSize: "14px",
   },
 }));
 
@@ -77,8 +93,9 @@ interface Props {
 
 export const MovieDetail = ({ movie }: Props) => {
   const classes = useStyles();
-  const [imdbId, setImdbId] = useState<string | null>("");
   const [error, setError] = useState(false);
+  const [whereToWatch, setWhereToWatch] = useState<any[]>([]);
+  const [genList, setGenList] = useState("");
   const [modalStyle] = useState(getModalStyle);
   const [, , , , openDetails, setOpenDetails] = useContext(
     SearchContextProvider
@@ -87,172 +104,62 @@ export const MovieDetail = ({ movie }: Props) => {
   const [isDark] = useContext(ThemeContextProvider);
 
   const onClickReset = () => {
-    setImdbId(null);
     setCast([]);
   };
 
   useEffect(() => {
-    console.log("firing off cleanup");
-    setImdbId(null);
-    setError(false);
-    setCast([]);
-  }, []);
-
-  useEffect(() => {
-    const getImdbId = async () => {
+    const getAvailability = async () => {
       try {
         const data = await axios.get(
-          `https://api.themoviedb.org/3/movie/${movie.id}/external_ids?api_key=${process.env.REACT_APP_TMDB_API}`
+          `https://api.themoviedb.org/3/movie/${movie.id}/watch/providers?api_key=${process.env.REACT_APP_TMDB_API}`
         );
-        setImdbId(data.data.imdb_id);
-      } catch (error) {
-        console.log(error);
-        setImdbId(null);
-        setError(true);
-      }
-    };
-    getImdbId();
-
-    const getImdbData = async () => {
-      if (process.env.REACT_APP_IMDB_API && imdbId) {
-        try {
-          const data = await axios.get(
-            "https://imdb8.p.rapidapi.com/title/get-top-cast",
-            {
-              params: { tconst: imdbId },
-              headers: {
-                "x-rapidapi-host": "imdb8.p.rapidapi.com",
-                "x-rapidapi-key": process.env.REACT_APP_IMDB_API,
-              },
-            }
-          );
-          const names: string[] = [];
-          for (let i = 0; i < 5; i++)
-            names.push(data.data[i].substring(6, data.data[i].length - 1));
-
-          const getChars = async () => {
-            const chars: any[] = [];
-            if (process.env.REACT_APP_IMDB_API) {
-              try {
-                const data = await axios.get(
-                  `https://imdb8.p.rapidapi.com/title/get-charname-list`,
-                  {
-                    params: {
-                      id: names[0],
-                      tconst: imdbId,
-                    },
-                    headers: {
-                      "x-rapidapi-host": "imdb8.p.rapidapi.com",
-                      "x-rapidapi-key": process.env.REACT_APP_IMDB_API,
-                    },
-                  }
-                );
-                chars.push(data.data);
-              } catch (error) {
-                console.log(error);
-              }
-            }
-            if (process.env.REACT_APP_IMDB_API) {
-              try {
-                const data = await axios.get(
-                  `https://imdb8.p.rapidapi.com/title/get-charname-list`,
-                  {
-                    params: {
-                      id: names[1],
-                      tconst: imdbId,
-                    },
-                    headers: {
-                      "x-rapidapi-host": "imdb8.p.rapidapi.com",
-                      "x-rapidapi-key": process.env.REACT_APP_IMDB_API,
-                    },
-                  }
-                );
-                chars.push(data.data);
-              } catch (error) {
-                console.log(error);
-              }
-            }
-            if (process.env.REACT_APP_IMDB_API) {
-              try {
-                const data = await axios.get(
-                  `https://imdb8.p.rapidapi.com/title/get-charname-list`,
-                  {
-                    params: {
-                      id: names[2],
-                      tconst: imdbId,
-                    },
-                    headers: {
-                      "x-rapidapi-host": "imdb8.p.rapidapi.com",
-                      "x-rapidapi-key": process.env.REACT_APP_IMDB_API,
-                    },
-                  }
-                );
-                chars.push(data.data);
-              } catch (error) {
-                console.log(error);
-              }
-            }
-            if (process.env.REACT_APP_IMDB_API) {
-              try {
-                const data = await axios.get(
-                  `https://imdb8.p.rapidapi.com/title/get-charname-list`,
-                  {
-                    params: {
-                      id: names[3],
-                      tconst: imdbId,
-                    },
-                    headers: {
-                      "x-rapidapi-host": "imdb8.p.rapidapi.com",
-                      "x-rapidapi-key": process.env.REACT_APP_IMDB_API,
-                    },
-                  }
-                );
-                chars.push(data.data);
-              } catch (error) {
-                console.log(error);
-              }
-            }
-            if (process.env.REACT_APP_IMDB_API) {
-              try {
-                const data = await axios.get(
-                  `https://imdb8.p.rapidapi.com/title/get-charname-list`,
-                  {
-                    params: {
-                      id: names[4],
-                      tconst: imdbId,
-                    },
-                    headers: {
-                      "x-rapidapi-host": "imdb8.p.rapidapi.com",
-                      "x-rapidapi-key": process.env.REACT_APP_IMDB_API,
-                    },
-                  }
-                );
-                chars.push(data.data);
-              } catch (error) {
-                console.log(error);
-              }
-            }
-            setCast(chars);
-          };
-          getChars();
-        } catch (error: any) {
-          setError(true);
-          console.log(error.message);
+        if (data.data.results["US"].flatrate) {
+          setWhereToWatch(data.data.results["US"].flatrate);
+        } else if (data.data.results["US"].rent) {
+          setWhereToWatch(data.data.results["US"].rent);
         }
+      } catch (error: any) {
+        console.log(error.message);
       }
     };
-    getImdbData();
-  }, [movie, imdbId]);
+    getAvailability();
+
+    const getCast = async () => {
+      const movieCast = [];
+      try {
+        const data = await axios.get(
+          `https://api.themoviedb.org/3/movie/${movie.id}/credits?api_key=${process.env.REACT_APP_TMDB_API}`
+        );
+        for (let i = 0; i < 5; i++) movieCast.push(data.data.cast[i]);
+        setCast(movieCast);
+      } catch (error: any) {
+        setError(true);
+        console.log(error.message);
+      }
+    };
+    getCast();
+
+    const getGenres = () => {
+      let gen = "";
+      movie.genre_ids.forEach((id: number) => {
+        if (genres[id]) gen += `${genres[id]}, `;
+      });
+      setGenList(gen.substring(0, gen.length - 2));
+    };
+    getGenres();
+  }, [movie]);
+
+  const handleClose = () => {
+    setOpenDetails(false);
+    setCast([]);
+    setError(false);
+    setWhereToWatch([]);
+  };
 
   return (
     <Modal
       open={openDetails}
-      onClose={() => {
-        setOpenDetails(false);
-        setImdbId(null);
-        setCast([]);
-        setError(false);
-      }}
+      onClose={() => handleClose()}
       aria-labelledby="simple-modal-title"
       aria-describedby="simple-modal-description"
     >
@@ -272,10 +179,19 @@ export const MovieDetail = ({ movie }: Props) => {
                 movie.original_title ||
                 movie.name}
             </Typography>
+            {genList !== "" && (
+              <Typography
+                variant="body2"
+                className={classes.genre}
+                color="textSecondary"
+              >
+                {genList}
+              </Typography>
+            )}
             <Typography
               variant="body2"
               className={classes.releaseDateTxt}
-              color="textPrimary"
+              color="textSecondary"
             >
               {movie.release_date}
             </Typography>
@@ -334,7 +250,7 @@ export const MovieDetail = ({ movie }: Props) => {
               Unable to load cast members
             </Typography>
           </Box>
-        ) : imdbId && cast.length > 0 ? (
+        ) : cast.length > 0 ? (
           <Box
             overflow="hidden"
             mt="15px"
@@ -354,12 +270,9 @@ export const MovieDetail = ({ movie }: Props) => {
                     className={classes.center}
                   >
                     <CastPoster
-                      img={Object.values<any>(member)[0]?.name?.image?.url}
-                      name={Object.values<any>(member)[0]?.name?.name}
-                      role={
-                        Object.values<any>(member)[0]?.charname[0]
-                          ?.characters[0]
-                      }
+                      img={`https://image.tmdb.org/t/p/original/${member.profile_path}`}
+                      name={member.original_name || member.name}
+                      role={member.character}
                     />
                   </Grid>
                 ))}
@@ -378,6 +291,7 @@ export const MovieDetail = ({ movie }: Props) => {
             <CircularProgress />
           </Box>
         )}
+        {whereToWatch.length > 0 && <WatchRow watchList={whereToWatch} />}
         <Suggestion
           id={movie.genre_ids[0]}
           currMovieID={movie.id}
