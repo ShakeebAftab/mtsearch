@@ -28,8 +28,8 @@ export const Review = ({ name, userName, avatar, content }: Props) => {
       display="flex"
       p="20px"
       mr="10px"
-      width="400px"
-      height="200px"
+      maxWidth="400px"
+      maxHeight="200px"
       style={{
         background: isDark ? "#4d4d4d" : "whitesmoke",
         borderRadius: 25,
@@ -61,7 +61,11 @@ export const Review = ({ name, userName, avatar, content }: Props) => {
         </Grid>
         <Grid item xs={12}>
           <Box>
-            <Typography variant="body1" color="textPrimary">
+            <Typography
+              variant="body1"
+              color="textPrimary"
+              style={{ marginBottom: "5px" }}
+            >
               {content}
             </Typography>
           </Box>
