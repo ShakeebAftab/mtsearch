@@ -14,6 +14,7 @@ import { genres } from "../helpers/genres";
 import { ThemeContextProvider } from "../theme/theme";
 import { CastPoster } from "./CastPoster";
 import { Ranking } from "./Ranking";
+import { ReviewsRow } from "./ReviewsRow";
 import { Suggestion } from "./Suggestion";
 import { MovieType } from "./types";
 import { WatchRow } from "./WatchRow";
@@ -96,6 +97,7 @@ export const MovieDetail = ({ movie }: Props) => {
   const [error, setError] = useState(false);
   const [whereToWatch, setWhereToWatch] = useState<any[]>([]);
   const [genList, setGenList] = useState("");
+  const [reviews, setReviews] = useState<any[]>([]);
   const [modalStyle] = useState(getModalStyle);
   const [, , , , openDetails, setOpenDetails] = useContext(
     SearchContextProvider
@@ -105,6 +107,8 @@ export const MovieDetail = ({ movie }: Props) => {
 
   const onClickReset = () => {
     setCast([]);
+    setWhereToWatch([]);
+    setReviews([]);
   };
 
   useEffect(() => {
@@ -147,12 +151,25 @@ export const MovieDetail = ({ movie }: Props) => {
       setGenList(gen.substring(0, gen.length - 2));
     };
     getGenres();
+
+    const getReviews = async () => {
+      try {
+        const data = await axios.get(
+          `https://api.themoviedb.org/3/movie/${movie.id}/reviews?api_key=${process.env.REACT_APP_TMDB_API}&language=en-US&page=1`
+        );
+        setReviews(data.data.results);
+      } catch (error: any) {
+        console.log(error.message);
+      }
+    };
+    getReviews();
   }, [movie]);
 
   const handleClose = () => {
     setOpenDetails(false);
     setCast([]);
     setError(false);
+    setReviews([]);
     setWhereToWatch([]);
   };
 
@@ -292,8 +309,10 @@ export const MovieDetail = ({ movie }: Props) => {
           </Box>
         )}
         {whereToWatch.length > 0 && <WatchRow watchList={whereToWatch} />}
+        {reviews.length > 0 && <ReviewsRow reviews={reviews} />}
         <Suggestion
-          id={movie.genre_ids[0]}
+          // id={movie.genre_ids[0]}
+          id={movie.id}
           currMovieID={movie.id}
           reset={onClickReset}
         />

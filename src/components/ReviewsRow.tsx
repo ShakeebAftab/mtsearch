@@ -1,8 +1,6 @@
 import { makeStyles } from "@material-ui/styles";
 import { Box, Typography } from "@material-ui/core";
-import { Service } from "./Service";
-import { useContext } from "react";
-import { ThemeContextProvider } from "../theme/theme";
+import { Review } from "./Review";
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -23,12 +21,11 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface Props {
-  watchList: any[];
+  reviews: any[];
 }
 
-export const WatchRow = ({ watchList }: Props) => {
+export const ReviewsRow = ({ reviews }: Props) => {
   const classes = useStyles();
-  const [isDark] = useContext(ThemeContextProvider);
 
   return (
     <Box mb="8px">
@@ -37,19 +34,17 @@ export const WatchRow = ({ watchList }: Props) => {
         component="h2"
         color="textPrimary"
         className={classes.title}
-        style={{ background: isDark ? "#4D4D4D" : "whitesmoke" }}
       >
-        Stream Now
+        Reviews
       </Typography>
-      <Box
-        className={classes.posters}
-        style={{ background: isDark ? "#4D4D4D" : "whitesmoke" }}
-      >
-        {watchList.map((item: any, idx: number) => (
+      <Box className={classes.posters}>
+        {reviews.map((item: any, idx: number) => (
           <div key={`${idx}`}>
-            <Service
-              img={`https://image.tmdb.org/t/p/original/${item.logo_path}`}
-              name={item.provider_name}
+            <Review
+              avatar={`https://image.tmdb.org/t/p/original/${item?.author_details?.avatar_path}`}
+              name={item.author || item?.author_details?.name}
+              userName={item?.author_details?.username}
+              content={item?.content}
             />
           </div>
         ))}

@@ -38,7 +38,8 @@ export const Suggestion = ({ id, currMovieID, reset }: Props) => {
     const fetchData = async () => {
       try {
         const data = await axios.get(
-          `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_API}&with_genres=${id}`
+          // `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_API}&with_genres=${id}`
+          `https://api.themoviedb.org/3/movie/${id}/similar?api_key=${process.env.REACT_APP_TMDB_API}&language=en-US&page=1`
         );
         setMovies(data.data.results);
       } catch (err) {

@@ -37,7 +37,7 @@ export const Service = ({ name, img }: Props) => {
       height="130px"
       width="120px"
       className={classes.box}
-      style={{ background: isDark ? "#616161" : "#dbdbdb" }}
+      style={{ background: isDark ? "#7a7a7a" : "#dbdbdb" }}
       mr="20px"
     >
       <Grid container>
