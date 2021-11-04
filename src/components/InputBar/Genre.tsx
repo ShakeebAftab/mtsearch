@@ -2,13 +2,12 @@ import { makeStyles, SvgIconTypeMap, Typography } from "@material-ui/core";
 import { OverridableComponent } from "@material-ui/core/OverridableComponent";
 import clsx from "clsx";
 import { useContext } from "react";
-import { ThemeContextProvider } from "../theme/theme";
+import { ThemeContextProvider } from "../../theme/theme";
 
 interface Props {
   Icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
   name: string;
   color?: string;
-  height: number;
   selected: boolean;
 }
 
@@ -40,7 +39,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const Genre = ({ Icon, name, height, selected }: Props) => {
+export const Genre = ({ Icon, name, selected }: Props) => {
   const classes = useStyles();
 
   const [isDark] = useContext(ThemeContextProvider);
@@ -54,8 +53,8 @@ export const Genre = ({ Icon, name, height, selected }: Props) => {
     >
       <Icon
         style={{
-          height: `${height}px`,
-          objectFit: "contain",
+          marginRight: "2px",
+          height: "22px",
         }}
         color="primary"
       />

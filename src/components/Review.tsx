@@ -28,8 +28,9 @@ export const Review = ({ name, userName, avatar, content }: Props) => {
       display="flex"
       p="20px"
       mr="10px"
+      minWidth="200px"
       maxWidth="400px"
-      maxHeight="200px"
+      height="200px"
       style={{
         background: isDark ? "#4d4d4d" : "whitesmoke",
         borderRadius: 25,

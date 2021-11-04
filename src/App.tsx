@@ -1,6 +1,6 @@
 import { Box, Grid } from "@material-ui/core";
 import { Header } from "./components/Header";
-import { Input } from "./components/Input";
+import { Input } from "./components/InputBar/Input";
 import { Results } from "./components/Results";
 
 export const App = () => {
