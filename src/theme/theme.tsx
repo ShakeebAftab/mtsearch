@@ -1,9 +1,14 @@
 import { createTheme } from "@material-ui/core";
 import { red } from "@material-ui/core/colors";
 import { ThemeProvider } from "@material-ui/styles";
-import { createContext, useState } from "react";
+import { createContext, Dispatch, useState } from "react";
 
-export const ThemeContextProvider = createContext<any>("");
+interface ThemeState {
+  isDark: boolean;
+  setIsDark: Dispatch<boolean>;
+}
+
+export const ThemeContextProvider = createContext<any | ThemeState>([]);
 
 export const ThemeContext = ({ children }: any) => {
   const [isDark, setIsDark] = useState(true);

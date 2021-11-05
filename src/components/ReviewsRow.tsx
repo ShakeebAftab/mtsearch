@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import { Box, Typography } from "@material-ui/core";
 import { Review } from "./Review";
+import { ReviewType } from "./types";
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -21,7 +22,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface Props {
-  reviews: any[];
+  reviews: ReviewType[];
 }
 
 export const ReviewsRow = ({ reviews }: Props) => {

@@ -1,4 +1,3 @@
-import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles(() => ({
@@ -22,10 +21,6 @@ interface Props {
 
 export const Movie = ({ id, posterPath }: Props) => {
   const classes = useStyles();
-
-  if (!posterPath)
-    return <CircularProgress color="primary" className={classes.img} />;
-
   return (
     <img
       src={`https://image.tmdb.org/t/p/original${posterPath}`}

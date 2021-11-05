@@ -25,7 +25,7 @@ const useStyles = makeStyles({
 
 interface Props {
   img: string;
-  name: string;
+  name: string | undefined;
   role: string;
 }
 

@@ -16,7 +16,7 @@ import { CastPoster } from "./CastPoster";
 import { Ranking } from "./Ranking";
 import { ReviewsRow } from "./ReviewsRow";
 import { Suggestion } from "./Suggestion";
-import { MovieType } from "./types";
+import { MovieType, ReviewType, ServiceType } from "./types";
 import { WatchRow } from "./WatchRow";
 
 const useStyles = makeStyles((theme) => ({
@@ -92,17 +92,24 @@ interface Props {
   movie: MovieType;
 }
 
+interface CastMemberType {
+  profile_path?: string;
+  original_name?: string;
+  name?: string;
+  character: string;
+}
+
 export const MovieDetail = ({ movie }: Props) => {
   const classes = useStyles();
   const [error, setError] = useState(false);
-  const [whereToWatch, setWhereToWatch] = useState<any[]>([]);
+  const [whereToWatch, setWhereToWatch] = useState<ServiceType[]>([]);
   const [genList, setGenList] = useState("");
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<ReviewType[]>([]);
   const [modalStyle] = useState(getModalStyle);
   const [, , , , openDetails, setOpenDetails] = useContext(
     SearchContextProvider
   );
-  const [cast, setCast] = useState<any[]>([]);
+  const [cast, setCast] = useState<CastMemberType[]>([]);
   const [isDark] = useContext(ThemeContextProvider);
 
   const onClickReset = () => {
@@ -278,21 +285,24 @@ export const MovieDetail = ({ movie }: Props) => {
           >
             <Container maxWidth="sm" className={classes.center}>
               <Grid container spacing={2} className={classes.center}>
-                {cast.map((member: any, idx: number) => (
-                  <Grid
-                    item
-                    sm={6}
-                    md={4}
-                    key={`${idx}`}
-                    className={classes.center}
-                  >
-                    <CastPoster
-                      img={`https://image.tmdb.org/t/p/original/${member.profile_path}`}
-                      name={member.original_name || member.name}
-                      role={member.character}
-                    />
-                  </Grid>
-                ))}
+                {cast.map(
+                  (member: CastMemberType, idx: number) =>
+                    member && (
+                      <Grid
+                        item
+                        sm={6}
+                        md={4}
+                        key={`${idx}`}
+                        className={classes.center}
+                      >
+                        <CastPoster
+                          img={`https://image.tmdb.org/t/p/original/${member?.profile_path}`}
+                          name={member?.original_name || member?.name}
+                          role={member?.character}
+                        />
+                      </Grid>
+                    )
+                )}
               </Grid>
             </Container>
           </Box>

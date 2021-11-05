@@ -1,15 +1,30 @@
-import { createContext, useState } from "react";
+import { createContext, Dispatch, useState } from "react";
 import { MovieType } from "../components/types";
 
-export const SearchContextProvider = createContext<any>("");
+interface State {
+  search: string;
+  setSearch: Dispatch<string>;
+  page: number;
+  setPage: Dispatch<number>;
+  openDetails: boolean;
+  setOpenDetails: Dispatch<boolean>;
+  openMovieDetails: MovieType | null;
+  setOpenMovieDetails: Dispatch<MovieType | null>;
+  movies: MovieType[] | null;
+  setMovies: Dispatch<MovieType | null>;
+  genre: boolean;
+  setGenre: Dispatch<boolean>;
+}
+
+export const SearchContextProvider = createContext<State | any>([]);
 
 export const SearchContext = ({ children }: any) => {
-  const [search, setSearch] = useState<any>("");
-  const [page, setPage] = useState<any>(1);
+  const [search, setSearch] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [openDetails, setOpenDetails] = useState(false);
   const [openMovieDetails, setOpenMovieDetails] = useState<MovieType | null>(
     null
   );
-  const [openDetails, setOpenDetails] = useState(false);
   const [movies, setMovies] = useState<MovieType[] | null>(null);
   const [genre, setGenre] = useState("ALL");
   return (

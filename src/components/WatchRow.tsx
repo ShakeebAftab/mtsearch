@@ -3,6 +3,7 @@ import { Box, Typography } from "@material-ui/core";
 import { Service } from "./Service";
 import { useContext } from "react";
 import { ThemeContextProvider } from "../theme/theme";
+import { ServiceType } from "./types";
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -23,7 +24,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface Props {
-  watchList: any[];
+  watchList: ServiceType[];
 }
 
 export const WatchRow = ({ watchList }: Props) => {
@@ -45,7 +46,7 @@ export const WatchRow = ({ watchList }: Props) => {
         className={classes.posters}
         style={{ background: isDark ? "#4D4D4D" : "whitesmoke" }}
       >
-        {watchList.map((item: any, idx: number) => (
+        {watchList.map((item: ServiceType, idx: number) => (
           <div key={`${idx}`}>
             <Service
               img={`https://image.tmdb.org/t/p/original/${item.logo_path}`}

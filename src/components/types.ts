@@ -17,3 +17,17 @@ export type MovieType = {
   name?: string;
   original_name?: string;
 };
+
+export type ReviewType = {
+  author?: string;
+  author_details?: {
+    name?: string;
+    username?: string;
+  };
+  content?: string;
+};
+
+export type ServiceType = {
+  logo_path: string;
+  provider_name: string;
+};
