@@ -30,8 +30,4 @@ Search engine for movies and tv-shows.
 
 ## Demo
 
-[![Watch the demo](https://i.imgur.com/2VpGqQw.png)](https://youtu.be/VixEYSJW4U8)
-
-## NOTE
-
-- Demo is of old version please checkout the deployed site to see all functionality of the site
+[![Watch the demo](https://i.imgur.com/tGmSJzG.png)](https://youtu.be/nqC0pnbr7OU)
