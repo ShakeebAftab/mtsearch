@@ -15,6 +15,7 @@ Search engine for movies and tv-shows.
 - Show's where to stream (if the selected item is available on any streaming service)
 - Dark & Light Theme
 - Fully Responsive
+- Used React Query for optimization
 
 ## Tech Stack
 
