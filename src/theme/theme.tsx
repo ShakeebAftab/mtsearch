@@ -1,13 +1,16 @@
+import { createContext, Dispatch, useState } from "react";
 import { createTheme } from "@material-ui/core";
 import { red } from "@material-ui/core/colors";
 import { ThemeProvider } from "@material-ui/styles";
-import { createContext, Dispatch, useState } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+// import { ReactQueryDevtools } from "react-query/devtools";
 
 interface ThemeState {
   isDark: boolean;
   setIsDark: Dispatch<boolean>;
 }
 
+export const queryClient = new QueryClient();
 export const ThemeContextProvider = createContext<any | ThemeState>([]);
 
 export const ThemeContext = ({ children }: any) => {
@@ -64,7 +67,10 @@ export const ThemeContext = ({ children }: any) => {
   return (
     <ThemeContextProvider.Provider value={[isDark, setIsDark]}>
       <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-        {children}
+        <QueryClientProvider client={queryClient}>
+          {children}
+          {/* <ReactQueryDevtools /> */}
+        </QueryClientProvider>
       </ThemeProvider>
     </ThemeContextProvider.Provider>
   );

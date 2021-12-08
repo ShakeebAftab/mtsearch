@@ -1,6 +1,8 @@
 import { Box, Grid } from "@material-ui/core";
-import axios, { Canceler } from "axios";
+// import axios, { Canceler } from "axios";
+import axios from "axios";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useQuery } from "react-query";
 import { SearchContextProvider } from "../context/SearchContext";
 import { filter } from "../helpers/filter";
 import { genreNumbers } from "../helpers/GenreDecode";
@@ -25,11 +27,31 @@ export const Results = () => {
     genre,
   ] = useContext(SearchContextProvider);
 
+  const { data } = useQuery<any, any>(
+    [search === "" ? `trending:${page}` : `${search}:${page}`],
+    async () => {
+      try {
+        setFetch(true);
+        const data = await axios.get(
+          search === ""
+            ? `https://api.themoviedb.org/3/trending/all/week?api_key=${process.env.REACT_APP_TMDB_API}&language=en-US&page=${page}`
+            : `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB_API}&language=en-US&query=${search}&page=${page}&include_adult=false`
+        );
+        setFetch(false);
+        return data.data;
+      } catch (error: any) {
+        setFetch(false);
+        if (axios.isCancel(error)) return;
+        console.log(error?.message);
+      }
+    }
+  );
+
   const observer = useRef<any>(null);
   const lastPoster = useCallback(
     (node) => {
       if (fetch) return;
-      if (observer.current?.isConnected) observer.current.disconnect();
+      if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((enteries) => {
         if (enteries[0].isIntersecting && hasMore)
           setPage((page: number) => page + 1);
@@ -55,35 +77,13 @@ export const Results = () => {
   };
 
   useEffect(() => {
-    setFetch(true);
-    let cancel: Canceler;
-    const fetchData = async () => {
-      try {
-        const data = await axios.get(
-          search === ""
-            ? `https://api.themoviedb.org/3/trending/all/week?api_key=${process.env.REACT_APP_TMDB_API}&language=en-US&page=${page}`
-            : `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB_API}&language=en-US&query=${search}&page=${page}&include_adult=false`,
-          {
-            cancelToken: new axios.CancelToken((c) => (cancel = c)),
-          }
-        );
-        setHasMore(data.data.results.length > 0);
-        setMovies((movies: MovieType[]) =>
-          movies !== null
-            ? filter(movies, data.data.results)
-            : data.data.results
-        );
-        setFetch(false);
-      } catch (error: any) {
-        if (axios.isCancel(error)) return;
-        console.log(error?.message);
-      }
-    };
-    fetchData();
-    return () => {
-      if (cancel) cancel();
-    };
-  }, [search, page, setMovies]);
+    if (!data) return;
+    setHasMore(data.results.length > 0);
+    setMovies((movies: MovieType[]) =>
+      movies !== null ? filter(movies, data.results) : data.results
+    );
+    return () => {};
+  }, [data, setMovies]);
 
   return (
     <Box

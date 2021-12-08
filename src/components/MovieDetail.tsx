@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { SearchContextProvider } from "../context/SearchContext";
 import { genres } from "../helpers/genres";
 import { ThemeContextProvider } from "../theme/theme";
@@ -118,37 +119,54 @@ export const MovieDetail = ({ movie }: Props) => {
     setReviews([]);
   };
 
-  useEffect(() => {
-    const getAvailability = async () => {
-      try {
-        const data = await axios.get(
-          `https://api.themoviedb.org/3/movie/${movie.id}/watch/providers?api_key=${process.env.REACT_APP_TMDB_API}`
-        );
-        if (data.data.results["US"].flatrate) {
-          setWhereToWatch(data.data.results["US"].flatrate);
-        } else if (data.data.results["US"].rent) {
-          setWhereToWatch(data.data.results["US"].rent);
-        }
-      } catch (error: any) {
-        console.log(error.message);
-      }
-    };
-    getAvailability();
+  const availData = useQuery(`${movie.id}:avail`, async () => {
+    try {
+      const { data } = await axios.get(
+        `https://api.themoviedb.org/3/movie/${movie.id}/watch/providers?api_key=${process.env.REACT_APP_TMDB_API}`
+      );
+      return data;
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  });
 
-    const getCast = async () => {
+  const castData = useQuery(`${movie.id}:cast`, async () => {
+    try {
+      const { data } = await axios.get(
+        `https://api.themoviedb.org/3/movie/${movie.id}/credits?api_key=${process.env.REACT_APP_TMDB_API}`
+      );
+      return data;
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  });
+
+  const reviewData = useQuery(`${movie.id}:review`, async () => {
+    try {
+      const { data } = await axios.get(
+        `https://api.themoviedb.org/3/movie/${movie.id}/reviews?api_key=${process.env.REACT_APP_TMDB_API}&language=en-US&page=1`
+      );
+      return data;
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  });
+
+  useEffect(() => {
+    if (!availData.data || !castData.data || !reviewData.data) return;
+    if (availData.data?.results["US"]?.flatrate) {
+      setWhereToWatch(availData.data?.results["US"]?.flatrate);
+    } else if (availData.data?.results["US"]?.rent) {
+      setWhereToWatch(availData.data?.results["US"]?.rent);
+    }
+
+    if (!castData.isError) {
       const movieCast = [];
-      try {
-        const data = await axios.get(
-          `https://api.themoviedb.org/3/movie/${movie.id}/credits?api_key=${process.env.REACT_APP_TMDB_API}`
-        );
-        for (let i = 0; i < 5; i++) movieCast.push(data.data.cast[i]);
-        setCast(movieCast);
-      } catch (error: any) {
-        setError(true);
-        console.log(error.message);
-      }
-    };
-    getCast();
+      for (let i = 0; i < 5; i++) movieCast.push(castData.data.cast[i]);
+      setCast(movieCast);
+    } else {
+      setError(true);
+    }
 
     const getGenres = () => {
       let gen = "";
@@ -159,18 +177,14 @@ export const MovieDetail = ({ movie }: Props) => {
     };
     getGenres();
 
-    const getReviews = async () => {
-      try {
-        const data = await axios.get(
-          `https://api.themoviedb.org/3/movie/${movie.id}/reviews?api_key=${process.env.REACT_APP_TMDB_API}&language=en-US&page=1`
-        );
-        setReviews(data.data.results);
-      } catch (error: any) {
-        console.log(error.message);
-      }
-    };
-    getReviews();
-  }, [movie]);
+    setReviews(reviewData.data.results);
+  }, [
+    availData.data,
+    castData.data,
+    reviewData.data,
+    castData.isError,
+    movie.genre_ids,
+  ]);
 
   const handleClose = () => {
     setOpenDetails(false);

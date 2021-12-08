@@ -47,11 +47,12 @@ export const Input = () => {
           justifyContent="center"
           alignItems="center"
         >
-          {searchGenres.map((genreSearch: genreType) => (
+          {searchGenres.map((genreSearch: genreType, idx: number) => (
             <Grid
               item
               md={2}
               onClick={() => setGenre(genreSearch.name.toUpperCase())}
+              key={`${idx}`}
             >
               <Genre
                 name={genreSearch.name}
