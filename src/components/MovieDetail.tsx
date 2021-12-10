@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
+import LazyLoad from "react-lazyload";
 import { useQuery } from "react-query";
 import { SearchContextProvider } from "../context/SearchContext";
 import { genres } from "../helpers/genres";
@@ -204,11 +205,13 @@ export const MovieDetail = ({ movie }: Props) => {
       <div style={modalStyle} className={classes.paper}>
         <Grid container>
           <Grid item xs={12}>
-            <img
-              src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
-              alt="backdrop"
-              className={classes.img}
-            />
+            <LazyLoad height={300} once>
+              <img
+                src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
+                alt="backdrop"
+                className={classes.img}
+              />
+            </LazyLoad>
           </Grid>
           <Grid item xs={12} className={classes.gridItemTitle}>
             <Typography variant="h4" color="textPrimary">

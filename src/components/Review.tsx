@@ -24,7 +24,8 @@ export const Review = ({ name, userName, avatar, content }: Props) => {
   const [isDark] = useContext(ThemeContextProvider);
   return (
     <Box
-      overflow="scroll"
+      overflow="auto"
+      textOverflow="wrap"
       display="flex"
       p="20px"
       mr="10px"

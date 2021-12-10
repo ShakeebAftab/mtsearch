@@ -40,14 +40,14 @@ export const ReviewsRow = ({ reviews }: Props) => {
       </Typography>
       <Box className={classes.posters}>
         {reviews.map((item: any, idx: number) => (
-          <div key={`${idx}`}>
-            <Review
-              avatar={`https://image.tmdb.org/t/p/original/${item?.author_details?.avatar_path}`}
-              name={item.author || item?.author_details?.name}
-              userName={item?.author_details?.username}
-              content={item?.content}
-            />
-          </div>
+          <Review
+            // avatar={`https://image.tmdb.org/t/p/original/${item?.author_details?.avatar_path}`}
+            avatar={`${item?.author_details?.avatar_path}`}
+            name={item.author || item?.author_details?.name}
+            userName={item?.author_details?.username}
+            content={item?.content}
+            key={`${idx}`}
+          />
         ))}
       </Box>
     </Box>

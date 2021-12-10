@@ -109,7 +109,11 @@ export const Results = () => {
                   onClick={() => handlePosterClick(movie)}
                   ref={lastPoster}
                 >
-                  <Movie id={movie.id} posterPath={movie.poster_path} />
+                  <Movie
+                    id={movie.id}
+                    posterPath={movie.poster_path}
+                    lazy={true}
+                  />
                 </Grid>
               ) : (
                 <Grid
@@ -117,7 +121,11 @@ export const Results = () => {
                   key={`${movie.id}:${idx}`}
                   onClick={() => handlePosterClick(movie)}
                 >
-                  <Movie id={movie.id} posterPath={movie.poster_path} />
+                  <Movie
+                    id={movie.id}
+                    posterPath={movie.poster_path}
+                    lazy={true}
+                  />
                 </Grid>
               ))
             );
