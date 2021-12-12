@@ -1,5 +1,4 @@
 import { Box, Grid } from "@material-ui/core";
-// import axios, { Canceler } from "axios";
 import axios from "axios";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
@@ -27,8 +26,8 @@ export const Results = () => {
     genre,
   ] = useContext(SearchContextProvider);
 
-  const { data } = useQuery<any, any>(
-    [search === "" ? `trending:${page}` : `${search}:${page}`],
+  const { data, refetch } = useQuery<any, any>(
+    [search === "" ? `trending` : `${search}:${page}`],
     async () => {
       try {
         setFetch(true);
@@ -44,6 +43,10 @@ export const Results = () => {
         if (axios.isCancel(error)) return;
         console.log(error?.message);
       }
+    },
+    {
+      refetchOnWindowFocus: false,
+      enabled: false,
     }
   );
 
@@ -75,6 +78,10 @@ export const Results = () => {
     });
     return lastId;
   };
+
+  useEffect(() => {
+    refetch();
+  }, [page, refetch, search]);
 
   useEffect(() => {
     if (!data) return;
