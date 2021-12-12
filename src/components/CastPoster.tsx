@@ -47,7 +47,12 @@ export const CastPoster = ({ img, name, role }: Props) => {
       <Grid container spacing={0}>
         <Grid item xs={12}>
           {/* <LazyLoad height={120} offset={50}> */}
-          <img src={img} alt="cast pic" className={classes.img} />
+          <img
+            src={img}
+            alt="cast pic"
+            className={classes.img}
+            loading="lazy"
+          />
           {/* </LazyLoad> */}
         </Grid>
         <Grid item xs={12}>

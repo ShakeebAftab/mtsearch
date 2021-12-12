@@ -210,6 +210,7 @@ export const MovieDetail = ({ movie }: Props) => {
                 src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
                 alt="backdrop"
                 className={classes.img}
+                loading="lazy"
               />
             </LazyLoad>
           </Grid>

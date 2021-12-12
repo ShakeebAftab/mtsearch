@@ -26,11 +26,12 @@ export const Movie = ({ id, posterPath, lazy }: Props) => {
 
   if (lazy)
     return (
-      <LazyLoad height={200} offset={300} once>
+      <LazyLoad height={200} offset={300}>
         <img
           src={`https://image.tmdb.org/t/p/original${posterPath}`}
           alt={`${id}`}
           className={classes.img}
+          loading="lazy"
         />
       </LazyLoad>
     );
@@ -40,6 +41,7 @@ export const Movie = ({ id, posterPath, lazy }: Props) => {
       src={`https://image.tmdb.org/t/p/original${posterPath}`}
       alt={`${id}`}
       className={classes.img}
+      loading="lazy"
     />
   );
 };

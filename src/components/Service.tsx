@@ -42,7 +42,12 @@ export const Service = ({ name, img }: Props) => {
     >
       <Grid container>
         <Grid item xs={12}>
-          <img src={img} alt="Streaming Service" className={classes.img} />
+          <img
+            src={img}
+            alt="Streaming Service"
+            className={classes.img}
+            loading="lazy"
+          />
         </Grid>
         <Grid item xs={12}>
           <Typography
