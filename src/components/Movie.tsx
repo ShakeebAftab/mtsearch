@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import LazyLoad from "react-lazyload";
+import React from "react";
 
 const useStyles = makeStyles(() => ({
   img: {
@@ -18,23 +18,10 @@ const useStyles = makeStyles(() => ({
 interface Props {
   id: number;
   posterPath?: string | null;
-  lazy?: boolean;
 }
 
-export const Movie = ({ id, posterPath, lazy }: Props) => {
+export const Movie = React.memo(({ id, posterPath }: Props) => {
   const classes = useStyles();
-
-  if (lazy)
-    return (
-      <LazyLoad height={200} offset={300}>
-        <img
-          src={`https://image.tmdb.org/t/p/original${posterPath}`}
-          alt={`${id}`}
-          className={classes.img}
-          loading="lazy"
-        />
-      </LazyLoad>
-    );
 
   return (
     <img
@@ -42,6 +29,7 @@ export const Movie = ({ id, posterPath, lazy }: Props) => {
       alt={`${id}`}
       className={classes.img}
       loading="lazy"
+      height={"95%"}
     />
   );
-};
+});
